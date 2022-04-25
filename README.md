@@ -85,4 +85,46 @@ yylex();
 return 0;  
 } 
 
-## 
+## Q4 o write a Yaac program which recognizes sound  and place with definition.  
+### LEX CODE:  
+%{  
+#include<stdio.h>  
+#include<ctype.h>  
+#include<stdlib.h>  
+#include"y.tab.h"  
+extern int yylval;  
+%}  
+%%  
+"chik" {printf("CHIK");return(CHIK);}  
+"chek" {printf("CHEK"); return(CHEK);}  
+"india" {printf("INDIA"); return(INDIA);}  
+%%  
+int main()  
+{  
+yylex();  
+return 0;  
+}  
+int yywrap()  
+{  
+} 
+ PAGE-9  
+PARSER CODE:  
+%{  
+#include<stdio.h>  
+#include<ctype.h>  
+#include<stdlib.h>  
+#include"lex.yy.c"  
+%}  
+%token CHIK CHEK INDIA  
+%%  
+rhyme : sound place  
+;  
+sound : CHIK CHEK  
+;  
+place : INDIA  
+;  
+%%  
+void yyerror(char *s)  
+{  
+ printf("% s is error", s);
+}
