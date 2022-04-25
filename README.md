@@ -107,8 +107,8 @@ return 0;
 int yywrap()  
 {  
 } 
- PAGE-9  
-PARSER CODE:  
+
+### PARSER CODE:  
 %{  
 #include<stdio.h>  
 #include<ctype.h>  
@@ -128,3 +128,91 @@ void yyerror(char *s)
 {  
  printf("% s is error", s);
 }
+## Q5. To write a Yaac program which recognises  arithmetic expressions involving + and - .  
+### LEX CODE:
+
+%{  
+#include<stdio.h>  
+#include "y.tab.h"  
+extern int yylval;  
+%}  
+%%  
+[0-9]+ {printf("Number\n"); return NUMBER;}  "+" {printf("Plus\n"); return PLUS;}  
+"-" {printf("Minus\n"); return MINUS;}  
+%%  
+int main()  
+{  
+yylex();  
+}  
+int yywrap()  
+{  
+return 1;  
+} 
+## Parser code 
+%{  
+#include<stdio.h>  
+#include<ctype.h>  
+#include<stdlib.h>  
+#include "lex.yy.c"  
+%}  
+%token NUMBER PLUS MINUS  
+%%  
+exp: NUMBER PLUS NUMBER  
+| NUMBER MINUS NUMBER  
+| NUMBER PLUS exp  
+| NUMBER MINUS exp;  
+%%  
+void yyerror(char *s)  
+{  
+printf("%s is error",s);  
+} 
+
+## Q6. To write a Yacc program and corresponding lex  program which recognize and calculate any statements  According to  
+ E->E+T/T  
+ T->T*F/F  
+ F->(E)| Digit  
+
+### LEX CODE:  
+%{  
+#include<stdlib.h>  
+#include"y.tab.h"  
+extern int yylval;  
+%}  
+%%  
+[0-9]+ {  
+ yylval=atoi(yytext);  
+ return NUMBER;  
+ }  
+[\t] ;  
+\n return 0;  
+. return yytext[0];  
+%% 
+PAGE-15  
+int yywrap()  
+{  
+ return 1;  
+}  
+### PARSER CODE:  
+%{  
+#include<stdio.h>  
+int flag=0;  
+void yyerror(char *s);  %}  
+%token NUMBER  
+%left'+'  
+%left'*'  
+%%  
+ArithmeticExpression:E {  printf("\nResult=%d\n,$$");  return 0;  
+}  
+E:E'+'E {$$=$1+$3;}  |E'*'E {$$=$1*$3;}  
+|NUMBER {$$=$1;}  
+;  
+%%  
+void main()  
+{ 
+printf("\nEnter any arithmetic expression which can  have operations addition and multiplication\n");  yyparse();  
+if(flag==0)  
+printf("\nEntered arithmetic expression in valid\n\n");  }  
+void yyerror(char *s)  
+{  
+printf("\nEntered arithmetic expression is invalid\n\n");  flag=1;  
+}  
